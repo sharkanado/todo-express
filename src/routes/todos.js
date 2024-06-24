@@ -1,24 +1,10 @@
 const express = require("express");
+const authenticateToken = require("../middleware/jwtAuth");
+
 const router = express.Router();
 
 const todos = [];
 const length = todos.length;
-
-const jwt = require("jsonwebtoken");
-
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.status(401).json({ message: "Unauthorized" });
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log("Error:", err);
-    console.log("User:", user);
-    if (err)
-      return res.status(403).json({ success: false, message: "Invalid token" });
-    req.user = user;
-    next();
-  });
-};
 
 router.get("/", authenticateToken, function (req, res, next) {
   res.status(200).json({
@@ -40,7 +26,7 @@ router.patch("/:id", authenticateToken, (req, res) => {
   const todoToUpdate = todos.find((todo) => todo.id === parseInt(id));
   todoToUpdate.isDone = isDone ? isDone : todoToUpdate.isDone;
   todoToUpdate.todo = todo ? todo : todoToUpdate.todo;
-  res.status(200).json();
+  res.status(201).json();
 });
 
 router.delete("/:id", authenticateToken, (req, res) => {

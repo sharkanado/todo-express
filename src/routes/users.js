@@ -1,6 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
+
+const router = express.Router();
 
 const users = [{ id: 1, login: "Anna", password: "secretKey" }];
 
