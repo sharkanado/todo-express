@@ -12,12 +12,9 @@ router.post("/signIn", (req, res) => {
     if (req.body.password === existingUser.password) {
       const token = jwt.sign(
         { userId: existingUser.id, login: existingUser.login },
-        "secretKey",
-        {
-          expiresIn: "1h",
-        }
+        process.env.ACCESS_TOKEN_SECRET
       );
-      res.status(200).json({ token });
+      res.status(200).json({ accessToken: token });
     } else {
       res.status(400).json("Invalid password.");
     }
