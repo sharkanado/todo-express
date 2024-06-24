@@ -1,14 +1,31 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
 const todos = [];
 const length = todos.length;
 //TODO: validation of req body - no idea how to with no use of any middleware
+//TODO: make it all a module?
 
-/* GET todos listing. */
+//https://www.geeksforgeeks.org/how-to-implement-jwt-authentication-in-express-js-app/?ref=lbp
 router.get("/", function (req, res, next) {
-  res.send(todos);
-  res.status(200).json();
+  const token = req.headers.authorization.split(" ")[1];
+  //Authorization: 'Bearer TOKEN'
+  if (!token) {
+    res.status(200).json({
+      success: false,
+      message: "Error! Token was not provided.",
+    });
+  }
+  //Decoding the token
+  const decodedToken = jwt.verify(token, "secretkeyappearshere");
+
+  res.status(200).json({
+    success: true,
+    data: {
+      todos,
+    },
+  });
 });
 
 router.post("/", (req, res) => {
